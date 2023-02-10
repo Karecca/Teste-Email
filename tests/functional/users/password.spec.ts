@@ -6,7 +6,7 @@ import { DateTime, Duration } from 'luxon';
 
 import { UserFactory } from '../../../Database/factories';
 
-test.group('Users passwords', (group) => {
+test.group('Passwords', (group) => {
 
   group.each.setup(async () => {
     await Database.beginGlobalTransaction()

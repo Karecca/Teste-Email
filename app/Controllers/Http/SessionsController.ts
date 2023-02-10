@@ -1,12 +1,15 @@
-import Mail from '@ioc:Adonis/Addons/Mail'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 
 export default class SessionsController {
 
   async store({ auth, request, response }: HttpContextContract) {
-    const { username, email, password } = request.all()
+    const { username, email, password } = request.only(['username', 'email', 'password'])
 
+    await auth.attempt(email, password)
+    return response.created({ user: auth.user })
+
+    /*
     try {
       const token = await auth.use('api').attempt(email, password)
 
@@ -22,6 +25,6 @@ export default class SessionsController {
       return response.unauthorized('Invalid Credentials')
 
     }
-
+*/
   }
 }
