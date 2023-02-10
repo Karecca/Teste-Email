@@ -1,7 +1,7 @@
 import Hash from '@ioc:Adonis/Core/Hash';
 import Database from '@ioc:Adonis/Lucid/Database';
 import { test } from '@japa/runner';
-import { UserFactory } from 'Database/factories';
+import { UserFactory } from '../../../Database/factories';
 
 test.group('Users', (group) => {
 
