@@ -1,0 +1,14 @@
+import { CustomMessages, rules, schema } from '@ioc:Adonis/Core/Validator'
+
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+
+export default class ResetPasswordValidator {
+  constructor(protected ctx: HttpContextContract) { }
+
+  public schema = schema.create({
+    token: schema.string(),
+    password: schema.string({}, [rules.minLength(4)])
+  })
+
+  public messages: CustomMessages = {}
+}
