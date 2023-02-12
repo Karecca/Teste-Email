@@ -1,15 +1,29 @@
 import Hash from '@ioc:Adonis/Core/Hash';
 import Database from '@ioc:Adonis/Lucid/Database';
 import { test } from '@japa/runner';
+
 import { UserFactory } from '../../../Database/factories';
 
 test.group('Users', (group) => {
-
   group.each.setup(async () => {
     await Database.beginGlobalTransaction()
+
     return () => Database.rollbackGlobalTransaction()
   })
 
+
+  /*
+    ApiClient.setup(async (client) => {
+      const plainPassword = 'test'
+      const { email } = await UserFactory.merge({ password: plainPassword }).create()
+      const response = await client.post('/sessions').json({ email, password: plainPassword })
+
+      response.assertStatus(201)
+
+      token = response.body().token
+    })
+
+  */
   test('Cadastro de Super Usuario', async ({ client, assert }) => {
     const userPayload = {
       username: 'Super Usuario',
@@ -87,14 +101,13 @@ test.group('Users', (group) => {
   })
 
   test('Deve testar a atualização do email de usuário', async ({ client }) => {
-    const { id, username, password } = await UserFactory.create()
+    const user = await UserFactory.create()
     const email = 'teste@test.com'
-
-    const response = await client.put(`/users/${id}`).json({
+    const response = await client.put(`/users/${user.id}`).json({
       email: email,
-      username: username,
-      password: password
-    })
+      username: user.username,
+      password: user.password
+    }).loginAs(user)
 
     response.assertStatus(200)
 
@@ -112,7 +125,7 @@ test.group('Users', (group) => {
       email: user.email,
       username: user.username,
       password: password
-    })
+    }).loginAs(user)
 
     response.assertStatus(200)
 
@@ -127,9 +140,9 @@ test.group('Users', (group) => {
   })
 
   test('Deve retornar 422 quando falta dados para alteração de usuario', async ({ client, assert }) => {
-    const { id } = await UserFactory.create()
+    const user = await UserFactory.create()
 
-    const response = await client.put(`/users/${id}`).json({})
+    const response = await client.put(`/users/${user.id}`).json({}).loginAs(user)
 
     response.assertStatus(422)
 
@@ -138,13 +151,14 @@ test.group('Users', (group) => {
   })
 
   test('Deve retornar 422 quando fornecido email invalido para alteração', async ({ client, assert }) => {
-    const { id, username, password } = await UserFactory.create()
+    const user = await UserFactory.create()
+    const { id, username, password } = user
 
     const response = await client.put(`/users/${id}`).json({
       username,
       email: 'test@',
       password
-    })
+    }).loginAs(user)
 
     response.assertStatus(422)
 
@@ -153,13 +167,14 @@ test.group('Users', (group) => {
   })
 
   test('Deve retornar 422 quando fornecida senha invalida para alteração', async ({ client, assert }) => {
-    const { id, username, email } = await UserFactory.create()
+    const user = await UserFactory.create()
+    const { id, username, email } = user
 
     const response = await client.put(`/users/${id}`).json({
       username,
       email,
       password: '12'
-    })
+    }).loginAs(user)
 
     response.assertStatus(422)
 

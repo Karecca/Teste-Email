@@ -4,10 +4,10 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 export default class SessionsController {
 
   async store({ auth, request, response }: HttpContextContract) {
-    const { username, email, password } = request.only(['username', 'email', 'password'])
+    const { email, password } = request.only(['username', 'email', 'password'])
 
-    await auth.attempt(email, password)
-    return response.created({ user: auth.user })
+    const token = await auth.use('api').attempt(email, password, { expiresIn: '2hours' })
+    return response.created({ user: auth.user, token })
 
     /*
     try {
@@ -26,5 +26,10 @@ export default class SessionsController {
 
     }
 */
+  }
+
+  async destroy({ auth, response }: HttpContextContract) {
+    await auth.logout()
+    return response.ok({})
   }
 }

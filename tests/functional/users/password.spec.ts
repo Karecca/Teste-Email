@@ -100,7 +100,7 @@ test.group('Passwords', (group) => {
     assert.equal(duoresponse.body().status, 404)
   })
 
-  test('não é possível redefinir a senha quando o token expira após 2 horas', async ({ client, assert }) => {
+  test('Testar se é possível redefinir a senha quando o token expira após 2 horas', async ({ client, assert }) => {
     const user = await UserFactory.create()
     const date = DateTime.now().minus(Duration.fromISOTime('02:01'))
     const { token } = await user.related('tokens').create({ token: 'token', createdAt: date })
