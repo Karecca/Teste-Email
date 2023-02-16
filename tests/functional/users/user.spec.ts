@@ -11,19 +11,6 @@ test.group('Users', (group) => {
     return () => Database.rollbackGlobalTransaction()
   })
 
-
-  /*
-    ApiClient.setup(async (client) => {
-      const plainPassword = 'test'
-      const { email } = await UserFactory.merge({ password: plainPassword }).create()
-      const response = await client.post('/sessions').json({ email, password: plainPassword })
-
-      response.assertStatus(201)
-
-      token = response.body().token
-    })
-
-  */
   test('Cadastro de Super Usuario', async ({ client, assert }) => {
     const userPayload = {
       username: 'Super Usuario',

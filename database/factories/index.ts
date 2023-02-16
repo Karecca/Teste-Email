@@ -1,4 +1,5 @@
 import Factory from '@ioc:Adonis/Lucid/Factory'
+import Group from 'App/Models/Group'
 import User from 'App/Models/User'
 
 export const UserFactory = Factory.define(User, ({ faker }) => {
@@ -6,5 +7,15 @@ export const UserFactory = Factory.define(User, ({ faker }) => {
     username: faker.name.firstName(),
     email: faker.internet.email(),
     password: faker.internet.password()
+  }
+}).build()
+
+export const GroupFactory = Factory.define(Group, ({ faker }) => {
+  return {
+    name: faker.name.firstName(),
+    description: faker.lorem.paragraph(),
+    schedule: faker.date.weekday(),
+    location: faker.internet.url(),
+    chronic: faker.lorem.sentence()
   }
 }).build()
